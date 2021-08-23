@@ -1,7 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
+import { User } from '../users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class AuthService {
@@ -9,7 +11,14 @@ export class AuthService {
 
     async validateUser(email: string, pass: string): Promise<any> {
         // Check if user with email exists in database
-        const user = await this.usersService.findByEmail(email);
+        let user: User;
+        try {
+            user = await this.usersService.findByEmail(email);
+        } catch (err) {
+            err.status = HttpStatus.UNAUTHORIZED
+            err.response.status = HttpStatus.UNAUTHORIZED
+            throw err           
+        }
 
         // Check if password from client matches password associated with
         // the user retrieved from database
@@ -29,10 +38,8 @@ export class AuthService {
         }
     }
 
-    async createJwt(user: any) {
-        const payload = {id:user.id, email:user.email};
-        return {
-            access_token: this.jwtService.sign(payload),
-        };
+    async createJwt(user: User) {
+        const {password,accept_terms, ...payload} = user;
+        return this.jwtService.sign(payload);
     }
 }

@@ -49,11 +49,20 @@ const initialFormData: UserLoginData = {
     email: '',
     password: '',
 };
+
 function Login() {
     const classes = useStyles();
     const history = useHistory();
-
+    const [status, setStatus] = React.useState<'idle' | 'loading' | 'success' | 'failure'>('idle')
+    const [error, setError] = React.useState<'' | 'email' | 'password'>('')
     const [ formData, setFormData ] = React.useState(initialFormData);
+
+    React.useEffect(() => {
+        if(status === 'success'){
+            history.push('/')
+        }
+    }, [status, history])
+
 
     const handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         const { name, value }: { name: string; value: string } = evt.target;
@@ -65,6 +74,7 @@ function Login() {
 
     const handleSubmit = async (evt: React.FormEvent) => {
         evt.preventDefault();
+        setStatus('loading')
         try {
             const res = await fetch('http://localhost:3001/api/auth/login', {
                 method: 'POST',
@@ -73,10 +83,18 @@ function Login() {
                 },
                 body: JSON.stringify(formData),
             });
-            const accessToken = await res.json()
-            history.push('/')
+            const data = await res.json()
+            if(data.status === 401){
+                setStatus('failure')
+                if(data.error === 'Email not found'){
+                    setError('email')
+                }
+                else if(data.error === 'Invalid password'){
+                    setError('password')
+                }
+            } else setStatus('success')
         } catch (err) {
-            // Handle error
+            setStatus('failure')
         }
     };
 
@@ -102,16 +120,19 @@ function Login() {
                                 value={formData.email}
                                 placeholder="jane@nonprofit.com"
                                 onChange={handleChange}
+                                error={error === 'email'}
                             />
-                            <PasswordInput value={formData.password} onChange={handleChange} showForgot={true} />
+                            <PasswordInput value={formData.password} onChange={handleChange} showForgot={true} error={error==='password'}/>
                             <Button
                                 className={classes.button}
                                 style={{ backgroundColor: '#C4C4C4', color: 'white' }}
                                 fullWidth
                                 type="submit"
                             >
-                                Sign In
+                                 Sign In
                             </Button>
+                            {/* Placeholder for loading  - waiting on UI/UX response as to what they want. */}
+                            {status === 'loading' && <Typography>Loading</Typography>} 
                         </form>
                     </Grid>
                     <Grid item xs={12}>

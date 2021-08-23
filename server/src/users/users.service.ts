@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Catch, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -7,13 +7,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
+// @Catch(QueryFailedError)
 export class UsersService {
     constructor(@InjectRepository(User) private usersRepository: Repository<User>) {}
 
     async create(createUserDto: CreateUserDto) {
-        const hashedPw = await bcrypt.hash(createUserDto.password, parseInt(process.env.BCRYPT_WORK_FACTOR));
-        createUserDto.password = hashedPw;
-        return this.usersRepository.save(createUserDto);
+        try {
+            const hashedPw = await bcrypt.hash(createUserDto.password, parseInt(process.env.BCRYPT_WORK_FACTOR));
+            createUserDto.password = hashedPw;
+            return await this.usersRepository.save(createUserDto);            
+        } catch (err) {
+            throw new HttpException({status:HttpStatus.CONFLICT, message: 'Email already exists' }, HttpStatus.CONFLICT)
+            
+        }
     }
 
     findAll() {

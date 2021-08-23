@@ -32,6 +32,7 @@ Primary tech stack: PostgreSQL, Nest, and React
     DATABASE_USER=postgres
     DATABASE_PASSWORD=your_password
     DATABASE_DB=test_db
+    BCRYPT_WORK_FACTOR=10
 ```
 
 ## Startup

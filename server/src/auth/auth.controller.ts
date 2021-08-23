@@ -18,6 +18,6 @@ export class AuthController {
     @Post('login')
     @UseGuards(LoginAuthGuard)
     async login(@Request() req) {
-        return this.authService.createJwt(req.user);
+        return {status: 200, access_token: await this.authService.createJwt(req.user)};
     }
 }

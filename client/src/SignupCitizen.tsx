@@ -70,8 +70,16 @@ const initialFormData: UserSignupData = {
 function SignupCitizen() {
     const classes = useStyles();
     const history = useHistory();
-
+    const [status, setStatus] = React.useState<'idle' | 'loading' | 'success' | 'failure'>('idle')
+    const [emailError, setEmailError] = React.useState(false)
     const [ formData, setFormData ] = React.useState(initialFormData);
+
+    React.useEffect(() => {
+        if(status === 'success'){
+            history.push('/')
+
+        }
+    }, [status, history])
 
     const handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         const { name, value, checked }: { name: string; value: string; checked: boolean } = evt.target;
@@ -83,6 +91,7 @@ function SignupCitizen() {
 
     const handleSubmit = async (evt: React.FormEvent) => {
         evt.preventDefault();
+        setStatus('loading')
         try {
             const res = await fetch('http://localhost:3001/api/users', {
                 method: 'POST',
@@ -91,9 +100,13 @@ function SignupCitizen() {
                 },
                 body: JSON.stringify(formData),
             });
-            history.push('/');
+            const data = await res.json()
+            if(data.status === 409){
+                setStatus('failure')
+                setEmailError(true)
+            } else setStatus('success')
         } catch (err) {
-            // Handle err
+            setStatus('failure')
         }
     };
 
@@ -163,6 +176,7 @@ function SignupCitizen() {
                             placeholder="jane@citizen.com"
                             onChange={handleChange}
                             startAdornment={true}
+                            error={emailError}
                         />
                         <PasswordInput value={formData.password} onChange={handleChange} startAdornment={true} />
                         <FormControlLabel
@@ -194,6 +208,8 @@ function SignupCitizen() {
                         >
                             Sign Up
                         </Button>
+                        {/* Placeholder for loading  - waiting on UI/UX response as to what they want. */}
+                        {status === 'loading' && <Typography>Loading</Typography>} 
                     </form>
                 </Grid>
             </Grid>

@@ -13,6 +13,9 @@ export class User {
   
     @Column({type:'text', unique: true})
     email: string;
+
+    @Column('boolean')
+    accept_terms: boolean;
   
     @Column('text')
     password: string;

@@ -5,6 +5,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import type { Theme } from '@material-ui/core/styles';
 import { makeStyles } from '@material-ui/core/styles';
 import * as React from 'react';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 const useStyles = makeStyles((theme: Theme) => {
     return {
@@ -29,16 +30,30 @@ interface Props {
     value: string;
     placeholder: string;
     startAdornment?: boolean;
+    error?: boolean;
 }
 
-function EmailInput({ onChange, value, placeholder, startAdornment = false }: Props) {
+function EmailInput({ onChange, value, placeholder, startAdornment = false, error = false }: Props) {
     const classes = useStyles();
 
+    const emailErrorMessage = ()=>{
+        if(error){
+            // Signup form uses a start adornment. 
+            // Different error message for signup vs login
+            if(startAdornment){
+                return <FormHelperText error>Email already exists.</FormHelperText>
+            }
+            else return <FormHelperText error>Email not found.</FormHelperText>
+        }
+        else return 
+    }
+
     return (
-        <FormControl fullWidth>
+        <FormControl fullWidth error={error}>
             <label className={classes.label} htmlFor="email">
                 Email Address
             </label>
+            {emailErrorMessage()}
             <Input
                 className={classes.input}
                 type="email"
@@ -51,6 +66,7 @@ function EmailInput({ onChange, value, placeholder, startAdornment = false }: Pr
                 onChange={onChange}
                 disableUnderline
                 required
+                error={error}
                 startAdornment={
                     startAdornment && (
                         <InputAdornment position="start">
