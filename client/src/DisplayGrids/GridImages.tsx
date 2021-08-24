@@ -5,7 +5,7 @@ import { Box } from '@material-ui/core';
 
 import type { Theme } from '@material-ui/core/styles';
 
-const useStyles = makeStyles<Theme, GridProps> ({
+const useStyles = makeStyles<Theme, GridProps> ((theme: Theme) => ({
     missionContent: {
         display: 'grid',
         gridTemplateColumns: 'repeat(7, 132px)',
@@ -13,7 +13,7 @@ const useStyles = makeStyles<Theme, GridProps> ({
         columnGap: '20px',
         rowGap: '20px',
         margin: '30px 0 10px 0',
-        maxWidth: '1200px',
+        maxWidth: theme.custom.maxContentWidth,
     },
     '@media screen and (max-width: 1100px)': {
         missionContent: {
@@ -32,7 +32,7 @@ const useStyles = makeStyles<Theme, GridProps> ({
             gridTemplateColumns: 'repeat(3, 1fr)',
         },
     },
-});
+}));
 
 type GridProps = {
     missionStatements: { row: number, title: string, text: string }[],

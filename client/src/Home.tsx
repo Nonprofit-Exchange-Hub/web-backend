@@ -89,11 +89,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     videoSectionText: {
         color: 'white',
-        fontFamily: 'Poppins',
-        fontStyle: 'normal',
-        fontWeight: 'normal',
-        fontSize: '30px',
-        lineHeight: '45px',
+        padding: '0 0 0 5%',
+        // fontFamily: 'Poppins',
+        // fontStyle: 'normal',
+        // fontWeight: 'normal',
+        // fontSize: '30px',
+        // lineHeight: '45px',
     },
     videoSectionVideo: {},
     needsAndOffersSub: {
@@ -186,9 +187,9 @@ function Home(): JSX.Element {
                 <div className={classes.videoSectionVideo}>
                     <img src={placeholderImg} alt="video placeholder" />
                 </div>
-                <div className={classes.videoSectionText}>
+                <Typography variant="h4" component="div" align="center" className={classes.videoSectionText}>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum semper et purus vestibulum consequat.
-                </div>
+                </Typography>
             </div>
             <div className={classes.faqs}>
                 <Typography variant="h4" component="h4" className={classes.faqsHeader}>

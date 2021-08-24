@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
+import { Box, Grid, Container } from '@material-ui/core/';
 
 import SmallDisplayCard from './SmallDisplayCard';
 
@@ -10,30 +10,19 @@ import type { Theme } from '@material-ui/core/styles';
 const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Facilisis placerat et, at vel tristique. Ac, gravida in quam gravida. Vel pretium nunc cursus donec enim. Sapien facilisis mauris justo, augue pharetra. Dignissim euismod fermentum sit gravida ut.";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    header: {
-        fontWeight: 'bold',
-        marginBottom: 15
-    },
-    headerText: {
-        width: '90%',
-        maxWidth: '1100px',
-        fontSize: '1.3rem',
-    },
-    mainPageSection: {
+    titleBox: {
+        height: 400,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: '50px',
-        paddingBottom: '50px',
-        fontSize: '1.4rem',
-    },
-    titleBox: {
-        height: 500,
     },
     guidelinesContainer: {
         backgroundColor: '#EBEBEB',
         overflow: 'hidden',
+        '& .MuiGrid-container': {
+            marginTop: '10px',
+        },
     },
     guidelinesContent: {
         position: 'relative',
@@ -54,32 +43,6 @@ const useStyles = makeStyles((theme: Theme) => ({
             fill: '#F8F8F8',
         },
     },
-    row: {
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        flexWrap: 'wrap',
-        paddingTop: '50px',
-        paddingBottom: '50px',
-        maxWidth: '1200px',
-    },
-    buttonRow: {
-        '& > div': {
-            margin: '10px',
-        }
-    },
-    trustListItem: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        maxWidth: '400px',
-        '& > div': {
-            marginLeft: '10px',
-            marginRight: '10px',
-        }
-    },
     imagePlaceholder: {
         width: '168px',
         height: '168px',
@@ -97,9 +60,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         textAlign: 'left',
         paddingBottom: '50px',
     },
-    bigSpacer: {
-        height: '400px',
-    },
 }));
 
 function TrustAndSafety() {
@@ -107,59 +67,68 @@ function TrustAndSafety() {
 
     return (
         <>
-            <Box className={`${classes.titleBox} ${classes.mainPageSection}`}>
-                <Typography className={classes.header} variant="h3" component="h3" align="center">
-                    Trust, Safety, & Privacy
-                </Typography>
-                <Typography className={classes.headerText} variant="body1" component="div">
-                    {loremIpsum}
-                </Typography>
-            </Box>
-            <Box className={`${classes.guidelinesContainer}`}>
-                <Box className={`${classes.guidelinesContent} ${classes.mainPageSection}`}>
-                    <Typography className={classes.header} variant="h3" component="h3" align="center">
-                        Our Community Guidelines
+            <Box className={`${classes.titleBox}`}>
+                <Container>
+                    <Typography variant="h3" component="h3" align="center">
+                        Trust, Safety, & Privacy
                     </Typography>
-                    <Typography className={classes.headerText} variant="body1" component="div">
+                    <Typography variant="body1" component="div">
                         {loremIpsum}
                     </Typography>
-                    <Box className={`${classes.row} ${classes.buttonRow}`}>
-                        <SmallDisplayCard
-                            headerText="Trust"
-                            bodyText={loremIpsum.slice(0,56)}
-                        />
-                        <SmallDisplayCard
-                            headerText="Safety"
-                            bodyText={loremIpsum.slice(0,56)}
-                        />
-                        <SmallDisplayCard
-                            headerText="Privacy"
-                            bodyText={loremIpsum.slice(0,56)}
-                        />
+                </Container>
+            </Box>
+            <Box className={`${classes.guidelinesContainer}`}>
+                <Container>
+                    <Box className={`${classes.guidelinesContent}`}>
+                        <Typography variant="h3" component="h3" align="center">
+                            Our Community Guidelines
+                        </Typography>
+                        <Typography variant="body1" component="div">
+                            {loremIpsum}
+                        </Typography>
+                        <Grid container direction="row" alignContent="space-between" spacing={2}>
+                            <Grid item xs={12} sm={4} container direction="column" alignItems="center">
+                                <SmallDisplayCard
+                                    headerText="Trust"
+                                    bodyText={loremIpsum.slice(0,56)}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={4} container direction="column" alignItems="center">
+                                <SmallDisplayCard
+                                    headerText="Safety"
+                                    bodyText={loremIpsum.slice(0,56)}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={4} container direction="column" alignItems="center">
+                                <SmallDisplayCard
+                                    headerText="Privacy"
+                                    bodyText={loremIpsum.slice(0,56)}
+                                />
+                            </Grid>
+                        </Grid>
                     </Box>
-                </Box>
+                </Container>
                 <Box className={classes.guidelinesBGWrapper}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                         <polygon points="0,100 100,0 100,100"/>
                     </svg>
                 </Box>
             </Box>
-            <Box className={`${classes.mainPageSection}`}>
-                <Typography className={classes.header} variant="h3" component="h3" align="center">
+            <Container>
+                <Typography variant="h3" component="h3" align="center">
                     Why was NEH created?
                 </Typography>
-                <Typography className={classes.headerText} variant="body1" component="div">
+                <Typography variant="body1" component="div">
                     {loremIpsum}
                     {loremIpsum}
                 </Typography>
-            </Box>
-            <Box className={classes.bigSpacer}></Box>
-            <Box className={`${classes.mainPageSection}`}>
-                <Typography className={classes.header} variant="h3" component="h3" align="center">
+            </Container>
+            <Container>
+                <Typography variant="h3" component="h3" align="center">
                     Trust
                 </Typography>
-                <Box className={`${classes.row}`}>
-                    <Box className={classes.trustListItem}>
+                <Grid container spacing={4}>
+                    <Grid item xs={12} sm={4} container direction="column" alignItems="center">
                         <Box className={classes.imagePlaceholder}></Box>
                         <Typography className={classes.trustTitle} variant="body1" component="div">
                             No Scams
@@ -167,8 +136,8 @@ function TrustAndSafety() {
                         <Typography className={classes.trustText} variant="body1" component="div">
                             {loremIpsum.slice(0,50)}.
                         </Typography>
-                    </Box>
-                    <Box className={classes.trustListItem}>
+                    </Grid>
+                    <Grid item xs={12} sm={4} container direction="column" alignItems="center">
                         <Box className={classes.imagePlaceholder}></Box>
                         <Typography className={classes.trustTitle} variant="body1" component="div">
                             Always be honest
@@ -176,8 +145,8 @@ function TrustAndSafety() {
                         <Typography className={classes.trustText} variant="body1" component="div">
                             {loremIpsum.slice(0,50)}.
                         </Typography>
-                    </Box>
-                    <Box className={classes.trustListItem}>
+                    </Grid>
+                    <Grid item xs={12} sm={4} container direction="column" alignItems="center">
                         <Box className={classes.imagePlaceholder}></Box>
                         <Typography className={classes.trustTitle} variant="body1" component="div">
                             No misrepresentation
@@ -185,9 +154,9 @@ function TrustAndSafety() {
                         <Typography className={classes.trustText} variant="body1" component="div">
                             {loremIpsum.slice(0,50)}.
                         </Typography>
-                    </Box>
-                </Box>
-            </Box>
+                    </Grid>
+                </Grid>
+            </Container>
         </>
     );
 }

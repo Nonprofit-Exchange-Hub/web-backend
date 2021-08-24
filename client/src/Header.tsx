@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontWeight: 'bold',
         textDecoration: 'none',
         color: 'black',
+        padding: '0 10px',
     },
     appBar: {
         backgroundColor: 'white',
@@ -62,7 +63,7 @@ function Header() {
                         <Button color="primary" variant="contained">Sign Up</Button>
                     </NavLink>
                     <NavLink className={classes.navLink} to="/login">
-                        <Button>Login</Button>
+                        <Button color="secondary" variant="contained">Login</Button>
                     </NavLink>
                 </div>
             </Toolbar>

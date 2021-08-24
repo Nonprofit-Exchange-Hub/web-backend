@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid, Container } from '@material-ui/core';
 import QuestionList from './QuestionList';
 import { BulletGrid, InstructionGrid } from './DisplayGrids';
 
@@ -74,40 +74,8 @@ const citizenQuestions = [
 ];
 
 const useStyles = makeStyles((theme: Theme) => ({
-    // universal styles
-    header: {
-        fontWeight: 'bold',
-        marginBottom: 15
-    },
-    headerText: {
-        width: '100%',
-        maxWidth: '1100px',
-        fontSize: '1.3rem',
-        textAlign: 'left',
-    },
-    mainPageSection: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: '50px',
-        paddingBottom: '50px',
-        paddingLeft: '20px',
-        paddingRight: '20px',
-        fontSize: '1.4rem',
-        '& h3': {
-            fontSize: '1.6em',
-            width: '100%',
-        },
-    },
-    limitWidth: {
-        margin: 'auto',
-        width: '100%',
-        maxWidth: '1100px',
-    },
-    // page specific styles
     questionSection: {
-        margin: '0 auto',
+        width: '100%',
         padding: '0 10px',
         display: 'flex',
         flexDirection: 'column',
@@ -128,10 +96,14 @@ const useStyles = makeStyles((theme: Theme) => ({
         margin: 'auto',
         padding: '0',
         borderBottom: '1px solid #C4C4C4',
-        '& .MuiGrid-item': {
-            padding: '20px',
-            paddingBottom: '0!important',
+        '& .MuiContainer-root': {
+            paddingTop: 0,
+            paddingBottom: 0,
         },
+    },
+    tabMenuLink: {
+        padding: '20px',
+        paddingBottom: '0!important',
     },
     button: {
         fontSize: '2rem',
@@ -142,7 +114,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: 'none',
     },
     selected: {
-        borderBottom: '11px solid #C4C4C4',
+        borderBottom: `11px solid ${theme.palette.primary.main}`,
     },
     questions: {
         alignSelf: 'flex-end',
@@ -164,41 +136,45 @@ function HowItWorks() {
 
     return (
         <>
-            <Box className={`${classes.titleBox} ${classes.mainPageSection}`}>
+            <Box className={`${classes.titleBox}`}>
             </Box>
 
             <Box className={`${classes.tabs}`}>
-                <Grid container justify='space-between' className={`${classes.limitWidth}`}>
-                    <Grid container item sm={6} xs={12}
-                        onClick={() => handleClickTab("nonprofit")}
-                    >
-                        <h3 className={`${classes.button} ${tabSelected === "nonprofit" ? classes.selected : ''}`}
-                        >I'm on a nonprofit team</h3>
+                <Container>
+                    <Grid container justify='space-between'>
+                        <Grid container item sm={6} xs={12}
+                            onClick={() => handleClickTab("nonprofit")}
+                            className={classes.tabMenuLink}
+                        >
+                            <h3 className={`${classes.button} ${tabSelected === "nonprofit" ? classes.selected : ''}`}
+                            >I'm on a nonprofit team</h3>
+                        </Grid>
+                        <Grid container item sm={6} xs={12}
+                            onClick={() => handleClickTab("citizen")}
+                            className={classes.tabMenuLink}
+                        >
+                            <h3 className={`${classes.button} ${tabSelected === "citizen" ? classes.selected : ''}`}
+                            >I'm a citizen</h3>
+                        </Grid>
                     </Grid>
-                    <Grid container item sm={6} xs={12}
-                        onClick={() => handleClickTab("citizen")}
-                    >
-                        <h3 className={`${classes.button} ${tabSelected === "citizen" ? classes.selected : ''}`}
-                        >I'm a citizen</h3>
-                    </Grid>
-                </Grid>
+                </Container>
             </Box>
 
-            <Box className={`${classes.mainPageSection} ${classes.limitWidth}`}>
+            <Container>
                 <InstructionGrid instructionList={ tabSelected === "nonprofit" ? nonprofitInstructionList : citizenInstructionList }></InstructionGrid>
-            </Box>
+            </Container>
 
-            <Box className={`${classes.greySection} ${classes.mainPageSection}`}>
-                <Box className={`${classes.limitWidth}`}>
-                    <Typography variant="h3" component="h3" align="left">
+            <Box className={`${classes.greySection}`}>
+                <Container>
+                    <Typography variant="h3" component="h3" align="center">
                         { tabSelected === "nonprofit" ? nonprofitBulletList.title : citizenBulletList.title }
                     </Typography>
                     <BulletGrid list={tabSelected === "nonprofit"? nonprofitBulletList.list : citizenBulletList.list}></BulletGrid>
-                </Box>
+                </Container>
             </Box>
 
-            <Box className={`${classes.mainPageSection}`}>
-                <Box className={`${classes.limitWidth} ${classes.questionSection}`}>
+            <Container>
+                <Box className={`${classes.questionSection}`}>
                     <Typography variant="h3" component="h3" align="left">
                         Still have questions?
                     </Typography>
@@ -206,7 +182,7 @@ function HowItWorks() {
                         <QuestionList questionList={tabSelected === "nonprofit" ? nonprofitQuestions : citizenQuestions}></QuestionList>
                     </Box>
                 </Box>
-            </Box>
+            </Container>
 
         </>
     );
