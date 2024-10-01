@@ -152,7 +152,7 @@ function SetNewPassword() {
   return (
     <div className={classes.container}>
       <div className={classes.imgContainer}>
-        <img src={SetNewPasswordImg} alt="FAQs Image" className={classes.setNewPasswordImg} />
+        <img src={SetNewPasswordImg} alt="FAQs" className={classes.setNewPasswordImg} />
       </div>
       <Paper elevation={0} className={classes.paper}>
         <Typography variant="h2" align="center">

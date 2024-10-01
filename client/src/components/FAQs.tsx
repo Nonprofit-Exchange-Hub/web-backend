@@ -58,7 +58,7 @@ function FAQs() {
   return (
     <div className={classes.faqs}>
       <div className={classes.faqsVisual}>
-        <img src={FAQsImage} alt="FAQs Image" className={classes.faqsImage} />
+        <img src={FAQsImage} alt="FAQs" className={classes.faqsImage} />
       </div>
       <div className={classes.faqsInfo}>
         <Typography variant="h4" component="h4">

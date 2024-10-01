@@ -7,9 +7,11 @@ import { UserOrganization } from '../../src/user-org/entities/user-org.entity';
 
 export const userEntityStub = (
   assets?: Asset[],
-  messages?: Message[],
+  sentMessages?: Message[],
   transactions?: Transaction[],
   organizations?: UserOrganization[],
+  receivedMessages?: Message[],
+
 ): User => {
   return {
     id: 234545,
@@ -21,8 +23,9 @@ export const userEntityStub = (
     state: 'WA',
     zip_code: '98101',
     assets: assets,
-    messages,
     transactions,
+    receivedMessages,
+    sentMessages,
     organizations,
     email_verified: true,
     email_notification_opt_out: false,

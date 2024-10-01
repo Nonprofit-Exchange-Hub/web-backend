@@ -51,20 +51,6 @@ function SignupCitizen() {
     }
   }, [user]);
 
-  useEffect(() => {
-    if (submitForm) {
-      registerUserMutation.mutate(formData);
-      setSubmitForm(false);
-    }
-  }, [submitForm]);
-
-  useEffect(() => {
-    if (submitProfile) {
-      updateProfileMutation.mutate({ file: image!, userId: user!['id'] });
-      setSubmitProfile(false);
-    }
-  }, [submitProfile]);
-
   const registerUserMutation = useMutation({
     mutationFn: Endpoints.userRegister,
     onSuccess: ({ data: user }) => {
@@ -81,6 +67,20 @@ function SignupCitizen() {
     onSuccess: () => console.log('Profile updated!'),
     onError: (error: AxiosError) => console.log(error),
   });
+
+  useEffect(() => {
+    if (submitForm) {
+      setSubmitForm(false);
+      registerUserMutation.mutate(formData);
+    }
+  }, [submitForm, setSubmitForm, formData]);
+
+  useEffect(() => {
+    if (submitProfile) {
+      updateProfileMutation.mutate({ file: image!, userId: user!['id'] });
+      setSubmitProfile(false);
+    }
+  }, [submitProfile, formData, image, user]);
 
   const handleNext = (newFormData: {}, doSubmit = false) => {
     setFormData((currFormData) => ({

@@ -85,7 +85,7 @@ function SearchResults(): JSX.Element {
   // TODO: create Volunteer Type in types/index.ts and change Object[] to Volunteer[] below
   const [volunteer, setVolunteer] = React.useState<Object[]>([]);
 
-  function fetchSearchData() {
+  const fetchSearchData = React.useCallback(() => {
     if (querySearchCategory === 'Volunteer') {
       // TODO: Change API to /volunteer
       fetch(`${APP_API_BASE_URL}/organizations`)
@@ -117,7 +117,7 @@ function SearchResults(): JSX.Element {
     } else {
       // TODO: Change API to fetch ALL combined data
     }
-  }
+  }, [querySearchCategory, querySearchText]);
 
   const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedFilters({

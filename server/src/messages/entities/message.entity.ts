@@ -1,3 +1,4 @@
+import { Organization } from '../../organizations/entities/organization.entity';
 import {
   Entity,
   Column,
@@ -5,10 +6,13 @@ import {
   ManyToOne,
   CreateDateColumn,
   JoinColumn,
+  OneToOne,
+  OneToMany,
 } from 'typeorm';
 
 import { User } from '../../acccount-manager/entities/user.entity';
 import { Transaction } from '../../transactions/entities/transaction.entity';
+import { IsOptional } from 'class-validator';
 
 @Entity('messages')
 export class Message {
@@ -24,11 +28,25 @@ export class Message {
   })
   created_date: Date;
 
-  @ManyToOne(() => User, (user) => user.messages, { eager: true })
+  @ManyToOne(() => User, (user) => user.sentMessages)
   @JoinColumn()
-  user: User;
+  sending_user: User;
+
+  @Column({ nullable: true })
+  sendingUserId: number;
+
+  @ManyToOne(() => Organization, (org) => org.messages)
+  @JoinColumn()
+  sending_org?: Organization;
+
+  @Column({ nullable: true })
+  sendingOrgId: number;
+
+  @Column()
+  read: boolean
 
   @ManyToOne(() => Transaction, (transaction) => transaction.messages)
   @JoinColumn()
   transaction: Transaction;
+
 }

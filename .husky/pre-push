@@ -1,0 +1,4 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+cd server && npm run checks && cd ../client && npm run checks && cd ..

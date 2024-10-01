@@ -25,6 +25,7 @@ export type Organization = {
   state: string;
   ein: string;
   nonprofit_classification: string;
+  image_url: string;
 };
 
 export enum Role {
@@ -39,12 +40,21 @@ export enum ApprovalStatus {
   denied = 'DENIED',
 }
 
+export type UserOrg = {
+  organization: Organization;
+  organizationId: number;
+  user: User;
+  role: string;
+  approvalStatus: string;
+};
+
 export type User = {
   id?: number;
   firstName: string;
   last_name?: string;
   email?: string;
   profile_image_url?: string;
+  organizations: UserOrg[];
   city?: string;
   state?: string;
   zip_code?: string;
@@ -54,16 +64,21 @@ export type User = {
 
 export type Transaction = {
   id: number;
-  donater: User;
-  requester: User;
+  donater_user: User;
+  donater_organization: Organization;
   asset: Pick<Asset, 'id' | 'title'>;
+  claimer: Organization;
+  messages: Message[];
 };
 
 export type Message = {
   id: number;
   text: string;
   transactionId: number;
-  user: User;
+  sendingUserId: number | null;
+  sendingOrgId: number | null;
+  created_date: string;
+  read: boolean;
 };
 
 export type Option = {

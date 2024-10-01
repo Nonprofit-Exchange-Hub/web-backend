@@ -1,10 +1,12 @@
-import { Get, Post, Body, Query, Param, Patch, Delete, Controller } from '@nestjs/common';
+import { Get, Post, Body, Query, Param, Patch, Delete, Controller, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-
+import { Request } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { GetTransactionsDto } from './dto/get-transactions-filter.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { Transaction } from './entities/transaction.entity';
+import { CookieAuthGuard } from 'src/acccount-manager/guards/cookie-auth.guard';
 import { ReturnTransactionDto } from './dto/return-transaction.dto';
 
 @ApiTags('transactions')
@@ -22,6 +24,20 @@ export class TransactionsController {
   @ApiOperation({ summary: 'Fetch transactions.' })
   get(@Query() getTransactionsDto: GetTransactionsDto): Promise<ReturnTransactionDto[]> {
     return this.transactionsService.getTransactions(getTransactionsDto);
+  }
+
+  @UseGuards(CookieAuthGuard)
+  @Get('/inbox')
+  // returns trasnactions with latest messages
+  async userInbox(  @Request() req: Request): Promise<Transaction[]> {
+    const user = req['user'];
+    const userOrgs = await user.organizations;
+    const org_id = userOrgs && userOrgs.length > 0 ? userOrgs[0].organizationId : false;
+    if (org_id) {
+      return this.transactionsService.find_by_org_with_latest_message(org_id);
+    } else {
+      return this.transactionsService.find_by_user_with_latest_message(user.id);
+    }
   }
 
   @Get('/:id')

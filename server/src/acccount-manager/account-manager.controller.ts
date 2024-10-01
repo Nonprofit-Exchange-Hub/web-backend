@@ -78,7 +78,7 @@ export class AccountManagerController {
   }
 
   @MapTo(ReturnUserDto)
-  @Post('signup')
+  @Post('register')
   async signup(@Body() signupDto: CreateUserDto): Promise<ReturnUserDto> {
     const exists = await this.usersService.userEmailExists(signupDto.email);
 
@@ -146,12 +146,12 @@ export class AccountManagerController {
     }
 
     // TODO: we probably need a better solution for this
-    if (!user.email_verified && process.env.NODE_ENV === 'staging') {
-      throw new HttpException(
-        { status: HttpStatus.UNAUTHORIZED, message: 'Unauthorized' },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    // if (!user.email_verified && process.env.NODE_ENV === 'staging') {
+    //   throw new HttpException(
+    //     { status: HttpStatus.UNAUTHORIZED, message: 'Unauthorized' },
+    //     HttpStatus.UNAUTHORIZED,
+    //   );
+    // }
 
     const jwt = await this.accountManagerService.createJwt(user);
     response

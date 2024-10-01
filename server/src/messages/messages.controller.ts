@@ -17,7 +17,6 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 import { ReturnMessageDto } from './dto/return-message.dto';
 import { DeleteResult } from 'typeorm';
 import type { Request as ExpressRequest } from 'express';
-import { User } from '../acccount-manager/entities/user.entity';
 import { CookieAuthGuard } from '../acccount-manager/guards/cookie-auth.guard';
 
 @ApiTags('messages')
@@ -32,8 +31,7 @@ export class MessagesController {
     @Request() request: ExpressRequest,
     @Body() createMessageDto: CreateMessageDto,
   ): Promise<ReturnMessageDto> {
-    const { user } = request;
-    const newMessage = await this.messagesService.create(createMessageDto, user as User);
+    const newMessage = await this.messagesService.create(createMessageDto);
     return newMessage;
   }
 
@@ -54,10 +52,10 @@ export class MessagesController {
   @Patch(':id')
   @ApiOperation({ summary: 'Update a message.' })
   async update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateMessageDto: UpdateMessageDto,
   ): Promise<ReturnMessageDto> {
-    return this.messagesService.update(+id, updateMessageDto);
+    return this.messagesService.update(id, updateMessageDto);
   }
 
   @Delete(':id')

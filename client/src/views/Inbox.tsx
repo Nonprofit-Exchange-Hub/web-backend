@@ -4,20 +4,19 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { makeStyles } from 'tss-react/mui';
 import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
 
 import type { Theme } from '@mui/material/styles';
 
 import SubHeader from '../components/Users/Inbox/SubHeader';
 import TransactionThreadCard from '../components/Users/Inbox/TransactionThreadCard';
-import MessageCard from '../components/Users/Inbox/MessageCard';
 import { UserContext } from '../providers';
 import routes from '../routes/routes';
 
 import type { Message, Transaction } from '../types';
 import { APP_API_BASE_URL } from '../configs';
+import { fetchInbox } from '../FetchActions';
+import TempChat from './TempChat';
 
 const useStyles = makeStyles()((theme: Theme) => ({
   inboxWrapper: {
@@ -27,7 +26,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
     textAlign: 'left',
   },
   sectionWrapper: {
-    border: '1px solid black',
+    border: '1px solid lightgrey',
     borderRadius: '10px',
     display: 'flex',
     flexDirection: 'column',
@@ -48,6 +47,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
   },
   threadsSection: {
     marginRight: '20px',
+    maxWidth: '30%',
   },
   messageInputWrapper: {
     width: '100%',
@@ -76,50 +76,17 @@ const useStyles = makeStyles()((theme: Theme) => ({
   },
 }));
 
-const fetchTransactions = (): Promise<Transaction[]> => {
-  return Promise.resolve([
-    {
-      id: 1,
-      donater: { id: 1, firstName: 'firstName1' },
-      requester: { id: 2, firstName: 'firstName2' },
-      asset: {
-        id: 1,
-        title: 'title 1',
-      },
-    },
-    {
-      id: 2,
-      donater: { id: 1, firstName: 'firstName1' },
-      requester: { id: 3, firstName: 'firstName3' },
-      asset: {
-        id: 2,
-        title: 'title 2',
-      },
-    },
-  ]);
-};
-
 // TODO: make the fetch find messages by transaction
 // TODO: seed data so that messages appear without manually creating them
 
-const fetchMessages = async (): Promise<Message[]> => {
-  const MESSAGES_API_URL = `${APP_API_BASE_URL}/messages`;
+const fetchMessages = async (id: number): Promise<Message[]> => {
+  const MESSAGES_API_URL = `${APP_API_BASE_URL}/transactions/${id}`;
   const res = await fetch(MESSAGES_API_URL);
   const data = await res.json();
-
-  const messages = await data.map((message: any) => {
-    return {
-      id: message.id,
-      text: message.text,
-      transactionId: message.transaction_id,
-      user: {
-        id: message.user.id,
-        firstName: message.user.firstName,
-      },
-    };
-  });
-
-  return messages;
+  return data.messages.sort(
+    (message1: Message, message2: Message) =>
+      (new Date(message1.created_date) as any) - (new Date(message2.created_date) as any),
+  );
 };
 
 // TODO use SubHeader component in Offer and Assets pages
@@ -132,16 +99,13 @@ function MessageInboxView(): JSX.Element {
   const [selectedTransaction, setSelectedTransaction] = React.useState<Transaction | null>(null);
   const [messages, setMessages] = React.useState<Message[]>([]);
 
-  const handleSendMessage = () => {};
-
   // todo switch to custom hook
   React.useEffect(() => {
     if (user) {
-      (async function () {
-        const transactions = await fetchTransactions(); // user.id
-        setTransactions(transactions);
+      fetchInbox((transactions: Transaction[]) => {
         setSelectedTransaction(transactions[0]);
-      })();
+        setTransactions(transactions);
+      }); // user.id
     }
   }, [user]);
 
@@ -149,11 +113,47 @@ function MessageInboxView(): JSX.Element {
   React.useEffect(() => {
     if (selectedTransaction) {
       (async function () {
-        const messages = await fetchMessages();
+        const messages = await fetchMessages(selectedTransaction.id);
         setMessages(messages);
       })();
     }
   }, [selectedTransaction]);
+
+  const transactionCards = (
+    <List>
+      {transactions &&
+        transactions.length &&
+        transactions.map((t) => (
+          <TransactionThreadCard
+            isSelected={t.id === selectedTransaction?.id}
+            onClick={(transaction: Transaction) => setSelectedTransaction(transaction)}
+            transaction={t}
+            user={user}
+          />
+        ))}
+    </List>
+  );
+
+  const noTransactionsMessage = (
+    <Box className={classes.noThreadsMessage}>
+      <Typography className={classes.noThreadsMessagePiece}>Inbox empty</Typography>
+      <Typography className={classes.noThreadsMessagePiece}>
+        Support an organization by <Link to={routes.Assets.path}>contributing</Link>something they
+        need
+      </Typography>
+      <Typography className={classes.noThreadsMessagePiece}>or</Typography>
+      <Typography className={classes.noThreadsMessagePiece}>
+        {/* update to prop to use routes once set up */}
+        <Link to="/weDontHaveAPostRouteYet">Post</Link> a need
+      </Typography>
+    </Box>
+  );
+
+  const transactionList = (
+    <div className={`${classes.sectionWrapper} ${classes.threadsSection}`}>
+      {transactions.length && transactions.length > 0 ? transactionCards : noTransactionsMessage}
+    </div>
+  );
 
   if (!user) {
     return <Redirect to={routes.Home.path} />;
@@ -162,62 +162,17 @@ function MessageInboxView(): JSX.Element {
       <>
         <SubHeader backTo={routes.Home.path} searchTo={routes.Inbox.path} />
         <Grid container className={classes.inboxWrapper} justifyContent="center">
-          <Grid
-            item
-            className={`${classes.sectionWrapper} ${classes.threadsSection}`}
-            xs={12}
-            sm={4}
-          >
-            <Typography variant="h5" component="h5" className={classes.sectionHeader}>
-              Inbox
-            </Typography>
-            {transactions.length ? (
-              transactions.map((t) => (
-                <TransactionThreadCard
-                  isSelected={t.id === selectedTransaction?.id}
-                  onClick={(transaction: Transaction) => setSelectedTransaction(transaction)}
-                  transaction={t}
-                  user={user}
-                />
-              ))
-            ) : (
-              <Box className={classes.noThreadsMessage}>
-                <Typography className={classes.noThreadsMessagePiece}>Inbox empty</Typography>
-                <Typography className={classes.noThreadsMessagePiece}>
-                  Support an organization by <Link to={routes.Assets.path}>contributing</Link>{' '}
-                  something they need
-                </Typography>
-                <Typography className={classes.noThreadsMessagePiece}>or</Typography>
-                <Typography className={classes.noThreadsMessagePiece}>
-                  {/* update to prop to use routes once set up */}
-                  <Link to="/weDontHaveAPostRouteYet">Post</Link> a need
-                </Typography>
-              </Box>
-            )}
-          </Grid>
+          {transactionList}
           <Grid item className={classes.sectionWrapper} xs={12} sm={7}>
             {selectedTransaction && (
-              <Box className={classes.messagesWrapper}>
-                <Typography variant="h5" component="h5" className={classes.sectionHeader}>
-                  Re: {selectedTransaction.asset.title}
-                </Typography>
-                {messages?.map((m) => (
-                  <MessageCard message={m} isCurrentUser={m.user.id === user?.id} />
-                ))}
-              </Box>
+              <TempChat
+                key={selectedTransaction.id}
+                transaction={selectedTransaction}
+                messages={messages || []}
+                classes={classes}
+                user={user}
+              />
             )}
-            <Box className={classes.messageInputWrapper}>
-              <form onSubmit={handleSendMessage} className={classes.messageInputForm}>
-                <TextField
-                  className={classes.messageInput}
-                  label="Enter your message here."
-                  variant="outlined"
-                />
-                <IconButton aria-label="send message" type="submit" size="large">
-                  <SendOutlinedIcon />
-                </IconButton>
-              </form>
-            </Box>
           </Grid>
         </Grid>
       </>

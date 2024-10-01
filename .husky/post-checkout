@@ -1,30 +1,8 @@
 #!/bin/sh
 FILE="$(dirname "$0")/_/husky.sh"
-
-DIFF=$(git diff --numstat $1 -- server/package.json)
-DIFF2=$(git diff --numstat $1 -- client/package.json)
-
-# Check if the diff is empty
-if [ -z "$DIFF" ]; then
-  echo 'Server Package.json unchanged'
-else
-  if [ ! -f "$FILE" ]; then
-    cd server && npm ci --legacy-peer-deps && npm run prepare && cd ..
-  else
-      . "$FILE"
-      cd server && npm ci --legacy-peer-deps && cd ..
-  fi
-
+if [ ! -f "$FILE" ]; then
+  cd server && npm ci --legacy-peer-deps && npm run prepare && cd ../client && npm ci --legacy-peer-deps && npm run prepare && cd ..
 fi
 
-if [ -z "$DIFF2" ]; then
-  echo ' Client Package.json unchanged'
-else
-  if [ ! -f "$FILE" ]; then
-    cd client && npm ci --legacy-peer-deps && npm run prepare && cd ..
-  else
-      . "$FILE"
-      cd client && npm ci --legacy-peer-deps && cd ..
-  fi
-
-fi
+. "$FILE"
+cd server && npm ci --legacy-peer-deps && cd ../client && npm ci --legacy-peer-deps && cd ..

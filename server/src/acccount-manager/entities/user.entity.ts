@@ -46,10 +46,10 @@ export class User {
   @OneToMany(() => Transaction, (transaction) => transaction.donater_user)
   transactions: Transaction[];
 
-  @OneToMany(() => Message, (message) => message.user)
-  messages: Message[];
+  @OneToMany(() => Message, (message) => message.sending_user)
+  sentMessages: Message[];
 
-  @OneToMany(() => UserOrganization, (user_org) => user_org.user)
+  @OneToMany(() => UserOrganization, (user_org) => user_org.user, { eager: true })
   organizations: UserOrganization[];
 
   @Column({ type: 'text', nullable: true })

@@ -19,7 +19,7 @@ export class CookieAuthGuard extends AuthGuard() {
       return false;
     }
 
-    let user: User = {} as User;
+    let user: User; // instantiate as user class instead of object so that relations can be loaded
     try {
       user = await this.jwtService.verify(jwt, { secret: process.env.JWT_SECRET });
     } catch (_e) {

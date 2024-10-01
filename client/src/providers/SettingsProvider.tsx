@@ -48,9 +48,8 @@ export const SettingsProvider = ({ children }: Props) => {
   const fetchCategories = async () => {
     try {
       const res = await fetch(`${APP_API_BASE_URL}/categories`);
-      const response = (await res.json()) satisfies Category[];
       if (res.ok) {
-        _categoriesRef.current = [...response];
+        _categoriesRef.current = [...((await res.json()) satisfies Category[])];
       }
     } catch (error) {
       console.log('Error fetching Categorie', error);

@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, CreateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn } from 'typeorm';
 
 import { Organization } from '../../organizations/entities/organization.entity';
 import { User } from '../../acccount-manager/entities/user.entity';
@@ -19,6 +19,9 @@ export class UserOrganization {
   @ManyToOne(() => Organization, (org) => org.users, { eager: true })
   organization!: Organization;
 
+  @Column({ nullable: true })
+  organizationId: number;
+
   @Column({
     type: 'enum',
     enum: Role,
@@ -26,7 +29,7 @@ export class UserOrganization {
   })
   role: Role;
 
-  @ManyToOne(() => User, (user) => user.organizations, { eager: true })
+  @ManyToOne(() => User, (user) => user.organizations)
   user!: User;
 
   @CreateDateColumn()

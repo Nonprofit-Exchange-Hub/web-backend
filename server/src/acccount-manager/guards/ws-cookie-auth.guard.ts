@@ -38,7 +38,6 @@ export class WsCookieGuard extends AuthGuard() {
     } catch (error) {
       return false;
     }
-
     context.switchToHttp().getRequest().user = user;
     return Boolean(user);
   }
