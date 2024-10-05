@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Grid, Typography, Card, Button } from '@mui/material';
+import { useHistory } from 'react-router-dom';
 
 const MakePost = () => {
   const [selected, setSelected] = useState<string | null>(null);
   const [step, setStep] = useState(1);
+  const history = useHistory();
 
   const handleCardClick = (id: string) => {
     setSelected(id);
@@ -11,8 +13,16 @@ const MakePost = () => {
 
   const handleNextClick = () => {
     if (step === 1 && selected) {
-      setStep(2);
-      setSelected(null);
+      if (selected === 'goods' || selected === 'skills') {
+        setStep(2);
+        setSelected(null);
+      }
+    } else if (step === 2 && selected) {
+      if (selected === 'need') {
+        history.push('/share-a-need');
+      } else if (selected === 'offer') {
+        history.push('/make-an-offer');
+      }
     }
   };
 

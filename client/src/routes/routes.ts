@@ -11,6 +11,8 @@ import SignupNonProfit from '../views/SignupNonProfit';
 import Inbox from '../views/Inbox';
 import User from '../views/User';
 import MakePost from '../views/MakePost';
+import ShareNeed from '../views/ShareNeed';
+import MakeOffer from '../views/MakeOffer';
 import ActionForm from '../views/ActionForm';
 import SearchResults from '../views/SearchResults';
 import Asset from '../views/Asset';
@@ -122,6 +124,16 @@ const routes: RouteMap = {
     component: MakePost,
     roles: [],
     path: '/make-a-post',
+  },
+  ShareNeed: {
+    component: ShareNeed,
+    roles: [],
+    path: '/share-a-need',
+  },
+  MakeOffer: {
+    component: MakeOffer,
+    roles: [],
+    path: '/make-an-offer',
   },
   ActionForm: {
     component: ActionForm,

@@ -19,6 +19,8 @@ const {
   Inbox,
   User,
   MakePost,
+  ShareNeed,
+  MakeOffer,
   ActionForm,
   Assets,
   Asset,
@@ -66,6 +68,12 @@ function Main() {
 
         {/*Make a post Route */}
         <Route exact path={MakePost.path} component={MakePost.component} />
+
+        {/*Share a Need */}
+        <Route exact path={ShareNeed.path} component={ShareNeed.component} />
+
+        {/*Make an Offer */}
+        <Route exact path={MakeOffer.path} component={MakeOffer.component} />
 
         {/* Private Routes */}
         <Route exact path={User.path} render={renderPrivateRoute(User.roles, User.component)} />
